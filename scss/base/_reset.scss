@@ -1,0 +1,40 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  font-family: "Rubik", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+span {
+  font-size: 1.8rem;
+}
+
+a {
+  text-decoration: none;
+  font-size: 1.8rem;
+}
+
+ul {
+  list-style: none;
+}
+
+@media screen and (min-width: $break-medium) {
+}
+
+@media screen and (min-width: $break-desktop) {
+}
