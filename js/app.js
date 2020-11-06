@@ -1,125 +1,103 @@
-// Search
-const searchAddress = document.getElementById("searchAddress");
-const btnSearch = document.getElementById("submit");
-// Info containers
-const ipAddress = document.getElementById("IP");
-const loc = document.getElementById("location");
-const timezone = document.getElementById("timezone");
-const isp = document.getElementById("ISP");
-// Map container
-const map = L.map("mapid", { zoomControl: false });
-
 // Production
-let api_key = "your_api_key";
-let ip = "";
-const url = "https://geo.ipify.org/api/v1";
+let apiKey = "your_api_key";
+const geolocationApiURL = "https://geo.ipify.org/api/v1";
 
 // Development
 if (API_KEY) {
-  api_key = API_KEY;
+  apiKey = API_KEY;
 }
 
-function setLayerMap() {
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+// Fetch reutilizable
+const fetchData = (endpoint) =>
+  fetch(endpoint, { options: "" })
+    .then((response) => response.json())
+    .then((data) => data)
+    .catch((error) => alert("Error! something went wrong...", error));
 
-  // Con mapbox, se necesita token
-  /*  L.tileLayer(
-    "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
-    {
-      attribution:
-        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      maxZoom: 18,
-      id: "mapbox/streets-v11",
-      tileSize: 512,
-      zoomOffset: -1,
-      accessToken: "Your token",
-    }
-  ).addTo(map); */
+// Obtención de la data
+async function getData(ipAddress) {
+  const userEndpoint = "https://api.ipify.org?format=json";
+  // IP del user
+  const userIP = await fetchData(userEndpoint);
+  // Si existe una ip del buscador
+  const ip = ipAddress || userIP.ip;
+
+  const geolocationAddressEndpoint = `${geolocationApiURL}?apiKey=${apiKey}&ipAddress=${ip}`;
+  // const geolocationDomainEndpoint = `${geolocationApiURL}?apiKey=${apiKey}&domain=${ip}`;
+
+  const geolocationData = await fetchData(geolocationAddressEndpoint);
+
+  setViewMap(geolocationData.location.lat, geolocationData.location.lng);
+  printData(geolocationData);
 }
 
-function setViewMap(data) {
-  map.setView([data[0].location.lat, data[0].location.lng], 13);
+// Map container
+const map = L.map("mapid", { zoomControl: false });
+
+function setViewMap(lat, lng) {
+  map.setView([lat, lng], 13);
+
+  // Icon
   var locationIcon = L.icon({
     iconUrl: "./images/icon-location.svg",
     iconSize: [30, 45], // size of the icon
     iconAnchor: [15, 22.5], // point of the icon which will correspond to marker's location
   });
-  L.marker([data[0].location.lat, data[0].location.lng], {
+  L.marker([lat, lng], {
     icon: locationIcon,
+  }).addTo(map);
+
+  // Layer Map
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18,
   }).addTo(map);
 }
 
-// Obtención de la IP usuario
-function getIP() {
-  fetch("https://api.ipify.org?format=json")
-    .then((response) => response.json())
-    .then((data) => getAddress(data.ip));
+// Search
+const searchValue = document.getElementById("search");
+const searchBtn = document.getElementById("submit");
+
+function ValidateIPaddress(inputText) {
+  const ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+  return ipformat.test(inputText);
 }
 
-// function requestLimit() {
-//   fetch(`https://geo.ipify.org/service/account-balance?apiKey=${api_key}`, {
-//     method: "GET",
-//     mode: "no-cors",
-//     credentials: "include",
-//     headers: {
-//       "Access-Control-Allow-Origin": "*",
-//     },
-//   })
-//     .then((response) => response.json())
-//     .then((data) => console.log(data.credits));
-// }
-
-// Llamada Api datos IP
-function getAddress(ip) {
-  if (ip) {
-    fetch(`${url}?apiKey=${api_key}&ipAddress=${ip}`)
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((err) => {
-        alert("Ops! algo no va bien...", err);
-      });
+function getInput(e) {
+  console.log("click");
+  e.preventDefault();
+  if (!ValidateIPaddress(searchValue.value)) {
+    invalidIP.style.display = "block";
+    return;
   }
+  console.log(searchValue.value);
+  getData(searchValue.value);
 }
 
-function getSeed() {
-  fetch("./js/seedData.json")
-    .then((response) => response.json())
-    .then((data) => {
-      printData(data);
-      setViewMap(data);
-    })
-    .catch((error) => console.log(error));
-}
+// Info containers
+const ipAddress = document.getElementById("IP");
+const loc = document.getElementById("location");
+const timezone = document.getElementById("timezone");
+const isp = document.getElementById("ISP");
 
-function trackAddress(ip) {
-  let addressToTrack = ip ? ip : address.value;
-
-  if (validateAddress(addressToTrack)) {
-    let cleanedAdderss = cleanAddress(addressToTrack);
-    fetchAddress(cleanedAdderss);
-  }
-}
-
-// Renderizado datos en el HTML
+// Render data in HTML
 function printData(data) {
-  ipAddress.innerHTML = data[0].ip;
-  loc.innerHTML = `${data[0].location.city}, ${data[0].location.country} ${data[0].location.postalCode}  `;
-  timezone.innerHTML = data[0].location.timezone;
-  isp.innerHTML = data[0].isp;
+  ipAddress.innerHTML = data.ip;
+  loc.innerHTML = `${data.location.city}, ${data.location.country} ${data.location.postalCode}  `;
+  timezone.innerHTML = data.location.timezone;
+  isp.innerHTML = data.isp;
 
-  searchAddress.value = "";
+  // clean search
+  searchValue.value = "";
 }
 
-// Buscador
-btnSearch.onclick = trackAddress;
-searchAddress.addEventListener("keydown", (e) => {
-  if (e.code === "Enter") {
-    trackAddress();
-  }
-});
+// Invalid IP
+const invalidIP = document.querySelector(".invalid-ip");
 
-setLayerMap();
-getSeed();
+// Events
+searchBtn.addEventListener("click", getInput);
+searchValue.addEventListener("focus", () => (invalidIP.style.display = "none"));
+
+getData();
