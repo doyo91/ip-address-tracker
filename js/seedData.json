@@ -1,0 +1,24 @@
+[
+  {
+    "ip": "178.237.231.109",
+    "location": {
+      "country": "ES",
+      "region": "Madrid",
+      "city": "Alcobendas",
+      "lat": 40.5339,
+      "lng": -3.6312,
+      "postalCode": "28100",
+      "timezone": "+01:00",
+      "geonameId": 3130583
+    },
+    "as": {
+      "asn": 15704,
+      "name": "M\u00e1sM\u00f3vil",
+      "route": "178.237.224.0/21",
+      "domain": "http://www.masmovil.es",
+      "type": "Cable/DSL/ISP"
+    },
+    "isp": "Neo-sky 2002",
+    "proxy": { "proxy": false, "vpn": false, "tor": false }
+  }
+]

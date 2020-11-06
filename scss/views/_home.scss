@@ -1,5 +1,49 @@
+header {
+  width: 100%;
+  height: 35vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 3rem;
+  padding-bottom: 0;
+  background: url("../images/pattern-bg.png") center / cover no-repeat;
+  position: relative;
+  z-index: 99;
+
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    color: white;
+  }
+
+  .limit {
+    position: absolute;
+    width: 15rem;
+    top: 0.5rem;
+    right: 50%;
+    transform: translateX(50%);
+    text-align: center;
+
+    padding: 0.25rem 0.5rem;
+    background-color: rgba($color: black, $alpha: 0.5);
+    span {
+      font-weight: 400;
+      font-size: 1.2rem;
+      color: $clr-secondary-gray;
+    }
+  }
+}
+
 main {
   width: 100%;
+
+  #mapid {
+    height: 65vh;
+    z-index: 0;
+  }
 
   @media screen and (min-width: $break-medium) {
   }
