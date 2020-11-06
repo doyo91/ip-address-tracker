@@ -11,6 +11,13 @@
       sizes="32x32"
       href="./images/favicon-32x32.png"
     />
+    <!-- Leaflet CSS-->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
     <!-- css -->
     <link rel="stylesheet" href="./css/styles.min.css" />
     <title>Frontend Mentor | IP Address Tracker</title>
@@ -19,18 +26,59 @@
     <header>
       <h1>IP Address Tracker</h1>
 
+      <div class="limit">
+        <span>Available requests:</span>
+        <span id="reqLimit"><strong>1000</strong></span>
+      </div>
+
       <div class="search">
         <input
           class="search__input"
           type="text"
+          id="searchAddress"
           aria-label="Search"
           placeholder="Search for any IP address or domain"
         />
-        <button class="search__btn">
+        <button class="search__btn" id="submit">
           <img src="./images/icon-arrow.svg" alt="Arrow icon" />
         </button>
       </div>
+
+      <article class="info">
+        <!-- IP Address -->
+        <div class="info__item">
+          <span class="info__title">IP Address</span>
+          <span class="info__data" id="IP"></span>
+        </div>
+        <!-- Location-->
+        <div class="info__item">
+          <span class="info__title">Location</span>
+          <span class="info__data" id="location"></span>
+        </div>
+        <!-- Timezone -->
+        <div class="info__item">
+          <span class="info__title">Timezone</span>
+          <span class="info__data" id="timezone"></span>
+        </div>
+        <!-- IP Address -->
+        <div class="info__item">
+          <span class="info__title">ISP</span>
+          <span class="info__data" id="ISP"></span>
+        </div>
+      </article>
     </header>
-    <main></main>
+    <main>
+      <div id="mapid"></div>
+    </main>
+
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+
+    <script src="./variables.js"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>
