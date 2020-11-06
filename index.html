@@ -28,21 +28,22 @@
 
       <div class="limit">
         <span>Available requests:</span>
-        <span id="reqLimit"><strong>1000</strong></span>
+        <span><strong id="reqLimit">1000</strong></span>
       </div>
 
-      <div class="search">
+      <form class="search" method="get">
         <input
           class="search__input"
           type="text"
-          id="searchAddress"
-          aria-label="Search"
+          name="search"
+          id="search"
+          aria-label="search"
           placeholder="Search for any IP address or domain"
         />
         <button class="search__btn" id="submit">
           <img src="./images/icon-arrow.svg" alt="Arrow icon" />
         </button>
-      </div>
+      </form>
 
       <article class="info">
         <!-- IP Address -->
@@ -68,6 +69,9 @@
       </article>
     </header>
     <main>
+      <div class="invalid-ip">
+        <h3>Please enter a valid ip address</h3>
+      </div>
       <div id="mapid"></div>
     </main>
 
