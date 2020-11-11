@@ -9,13 +9,19 @@ if (API_KEY) {
 
 // Fetch reutilizable
 const fetchData = (endpoint) =>
-  fetch(endpoint, { options: "" })
+  fetch(endpoint)
     .then((response) => response.json())
     .then((data) => data)
     .catch((error) => alert("Error! something went wrong...", error));
 
+const domainPattern = new RegExp("[www.]?.+.com(.[a-z]+)?");
+const IPPattern = new RegExp(
+  "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+);
 // Obtención de la data
 async function getData(ipAddress) {
+  let geolocationData;
+
   const userEndpoint = "https://api.ipify.org?format=json";
   // IP del user
   const userIP = await fetchData(userEndpoint);
@@ -23,13 +29,37 @@ async function getData(ipAddress) {
   const ip = ipAddress || userIP.ip;
 
   const geolocationAddressEndpoint = `${geolocationApiURL}?apiKey=${apiKey}&ipAddress=${ip}`;
-  // const geolocationDomainEndpoint = `${geolocationApiURL}?apiKey=${apiKey}&domain=${ip}`;
 
-  const geolocationData = await fetchData(geolocationAddressEndpoint);
+  const geolocationDomainEndpoint = `${geolocationApiURL}?apiKey=${apiKey}&domain=${ip}`;
+
+  if (domainPattern.test(ip)) {
+    geolocationData = await fetchData(geolocationDomainEndpoint);
+  }
+
+  if (IPPattern.test(ip)) {
+    geolocationData = await fetchData(geolocationAddressEndpoint);
+  }
+
+  if (geolocationData.location === undefined) {
+    invalidIP.style.display = "block";
+    return;
+  }
 
   setViewMap(geolocationData.location.lat, geolocationData.location.lng);
   printData(geolocationData);
 }
+
+// Static Data (Seed dev)
+// function getStaticData() {
+//   const staticEndpoint = "./js/seedData.json";
+
+//   fetch(staticEndpoint)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       setViewMap(data[0].location.lat, data[0].location.lng);
+//       printData(data[0]);
+//     });
+// }
 
 // Map container
 const map = L.map("mapid", { zoomControl: false });
@@ -59,21 +89,40 @@ function setViewMap(lat, lng) {
 const searchValue = document.getElementById("search");
 const searchBtn = document.getElementById("submit");
 
-function ValidateIPaddress(inputText) {
-  const ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+function ValidateAddress(inputText) {
+  if (domainPattern.test(inputText)) {
+    return true;
+  }
 
-  return ipformat.test(inputText);
+  if (IPPattern.test(inputText)) {
+    return true;
+  }
+  return false;
 }
 
 function getInput(e) {
-  console.log("click");
   e.preventDefault();
-  if (!ValidateIPaddress(searchValue.value)) {
+
+  let dataInput = searchValue.value.trim();
+
+  const [http, https] = ["http://", "https://"];
+
+  if (dataInput.startsWith(http)) {
+    dataInput = dataInput.slice(http.length);
+  } else if (dataInput.startsWith(https)) {
+    dataInput = dataInput.slice(https.length);
+  }
+
+  dataInput =
+    dataInput[dataInput.length - 1] === "/"
+      ? dataInput.slice(0, dataInput.length - 1)
+      : dataInput;
+
+  if (!ValidateAddress(dataInput)) {
     invalidIP.style.display = "block";
     return;
   }
-  console.log(searchValue.value);
-  getData(searchValue.value);
+  getData(dataInput);
 }
 
 // Info containers
@@ -100,4 +149,5 @@ const invalidIP = document.querySelector(".invalid-ip");
 searchBtn.addEventListener("click", getInput);
 searchValue.addEventListener("focus", () => (invalidIP.style.display = "none"));
 
-getData();
+// getStaticData();
+window.onload = getData();
