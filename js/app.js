@@ -40,6 +40,11 @@ async function getData(ipAddress) {
     geolocationData = await fetchData(geolocationAddressEndpoint);
   }
 
+  if (geolocationData.location === undefined) {
+    invalidIP.style.display = "block";
+    return;
+  }
+
   setViewMap(geolocationData.location.lat, geolocationData.location.lng);
   printData(geolocationData);
 }
