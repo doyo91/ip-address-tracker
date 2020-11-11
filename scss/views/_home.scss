@@ -1,6 +1,8 @@
 header {
   width: 100%;
   height: 35vh;
+  max-height: 30rem;
+  min-height: 25rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -10,6 +12,10 @@ header {
   background: url("../images/pattern-bg.png") center / cover no-repeat;
   position: relative;
   z-index: 99;
+
+  @media screen and (min-width: $break-medium) {
+    height: 20vh;
+  }
 
   h1 {
     font-size: 2.4rem;
@@ -39,6 +45,7 @@ header {
 
 main {
   width: 100%;
+  height: 65vh;
   position: relative;
   .invalid-ip {
     position: absolute;
@@ -63,10 +70,11 @@ main {
   }
 
   #mapid {
-    height: 65vh;
+    height: 100%;
     z-index: 0;
   }
 
   @media screen and (min-width: $break-medium) {
+    height: 80vh;
   }
 }

@@ -26,11 +26,6 @@
     <header>
       <h1>IP Address Tracker</h1>
 
-      <div class="limit">
-        <span>Available requests:</span>
-        <span><strong id="reqLimit">1000</strong></span>
-      </div>
-
       <form class="search" method="get">
         <input
           class="search__input"
@@ -44,7 +39,8 @@
           <img src="./images/icon-arrow.svg" alt="Arrow icon" />
         </button>
       </form>
-
+    </header>
+    <main>
       <article class="info">
         <!-- IP Address -->
         <div class="info__item">
@@ -67,8 +63,6 @@
           <span class="info__data" id="ISP"></span>
         </div>
       </article>
-    </header>
-    <main>
       <div class="invalid-ip">
         <h3>Please enter a valid ip address</h3>
       </div>
